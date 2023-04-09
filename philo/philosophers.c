@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 03:10:53 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/04/09 21:25:16 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/04/09 22:16:16 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,6 @@ int main(int ac, char **av)
 	if (ph_check_arg(ac, av, &table) || ph_init_table(ac, av, &table))
 		ph_exit();
 	ph_init_philos(&table);
-	printf("ok\n");
+	printf("[OK]\n");
 	return (0);
 }
