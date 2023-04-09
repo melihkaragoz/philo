@@ -12,6 +12,8 @@ typedef struct s_philo
 	int id;
 	int alive;
 	long last_eat;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
 	pthread_t thread;
 } t_philo;
 

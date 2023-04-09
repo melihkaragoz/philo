@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 23:07:48 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/04/09 18:40:46 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/04/09 21:33:18 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,22 @@
 
 int ph_init_philo(t_table *table)
 {
-	printf("[PR] %d numarali philo olusturuluyor\n",table->i);
 	t_data *data;
 
 	data = malloc(sizeof(t_data));
 	table->philos[table->i].id = table->i;
 	table->philos[table->i].alive = 1;
 	table->philos[table->i].last_eat = 0;
+	table->philos[table->i].left_fork = &table->forks[table->i];
+	if (table->i == table->num - 1)
+		table->philos[table->i].right_fork = &table->forks[0];
+	else
+		table->philos[table->i].right_fork = &table->forks[table->i + 1];
 	data->id = table->i;
 	data->table = table;
 	if (pthread_create(&table->philos[table->i].thread, NULL, ph_routine, data))
 		return (1);
-	printf("[OK] %d numarali philo olusturuldu.\n",table->i);
+	usleep(100);
 	return (0);
 }
 
@@ -36,8 +40,9 @@ int ph_init_philos(t_table *table)
 	while (++(table->i) < table->num)
 		if (ph_init_philo(table))
 			return (1);
+	// olum kontrolu
 	table->i = -1;
-	while (++(table->i) < table->num) // join yapilacak
+	while (++(table->i) < table->num)
 		pthread_join(table->philos[table->i].thread, NULL);
 	return (0);
 }
@@ -61,9 +66,11 @@ int ph_init_forks(t_table *table)
 {
 	table->forks = malloc(table->num * sizeof(pthread_mutex_t));
 	table->i = -1;
-	while (++(table->i) < table->num && printf("mutex initialized, id: %d\n", table->i))
+	while (++(table->i) < table->num)
+	{
 		if (pthread_mutex_init(&table->forks[table->i], NULL))
 			return (1);
+	}
 	return (0);
 }
 
