@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 23:07:48 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/05/06 17:12:21 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/05/06 18:22:08 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int ph_init_philo(t_table *table)
 	data->table = table;
 	if (pthread_create(&table->philos[table->i].thread, NULL, ph_routine, data))
 		return (1);
-	// usleep(100);
+	 usleep(100);
 	return (0);
 }
 

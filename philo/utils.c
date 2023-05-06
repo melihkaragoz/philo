@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:51:38 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/05/06 17:15:06 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/05/06 18:32:42 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,15 @@ void ph_eat(t_data *data)
 	long long cr;
 
 	pthread_mutex_lock(data->table->philos[data->id].left_fork);
+	ph_print("has taken a fork", data);
 	pthread_mutex_lock(data->table->philos[data->id].right_fork);
+	ph_print("has taken a fork", data);
 	cr = ph_updateTime(data->table);
 	ph_print("is eating", data);
-	// printf("[%lld]\t%d eating with these forks %p & %p\n", ph_updateTime(data->table) - data->table->start_milis, data->id, data->table->philos[data->id].left_fork, data->table->philos[data->id].left_fork);
 	while (cr + data->table->tte > ph_updateTime(data->table))
-		continue;
+	{
+		usleep(100);
+	}
 	pthread_mutex_unlock(data->table->philos[data->id].left_fork);
 	pthread_mutex_unlock(data->table->philos[data->id].right_fork);
 }
