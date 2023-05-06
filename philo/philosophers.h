@@ -12,8 +12,8 @@ typedef struct s_philo
 	int id;
 	int alive;
 	long last_eat;
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
+	pthread_mutex_t *left_fork;
+	pthread_mutex_t *right_fork;
 	pthread_t thread;
 } t_philo;
 
@@ -21,12 +21,15 @@ typedef struct s_table
 {
 	char **av;
 	int i;
-	int	ac;
+	int ac;
 	int num;
 	int ttd;
 	int tte;
 	int tts;
 	int pme;
+	int is_anybody_died;
+	struct timeval *tv;
+	long long start_milis;
 	pthread_mutex_t *forks;
 	t_philo *philos;
 } t_table;
@@ -38,10 +41,17 @@ typedef struct s_data
 } t_data;
 
 int ph_init_philo(t_table *table);
-int	ph_init_philos(t_table *table);
-int	ph_init_forks(t_table *table);
-int	ph_init_table(int ac, char **av, t_table *table);
+int ph_init_philos(t_table *table);
+void ph_eat(t_data *data);
+void ph_think(t_data *data);
+void ph_sleep(t_data *data);
+long long ph_updateTime(t_table *table);
+int ph_init_forks(t_table *table);
+int ph_init_table(int ac, char **av, t_table *table);
 int ph_check_arg(int ac, char **av, t_table *table);
-void	*ph_routine(void *arg);
+void *ph_routine(void *arg);
 void ph_exit();
+void ph_print(char *str, t_data *data);
+long long ph_updateTime(t_table *table);
+void ph_delay(int sec, t_table *table);
 #endif
