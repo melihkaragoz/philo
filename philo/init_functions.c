@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 23:07:48 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/05/06 18:22:08 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/05/06 22:49:58 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int ph_init_philo(t_table *table)
 	data->table = table;
 	if (pthread_create(&table->philos[table->i].thread, NULL, ph_routine, data))
 		return (1);
-	 usleep(100);
+	usleep(200);
 	return (0);
 }
 
@@ -41,6 +41,28 @@ int ph_init_philos(t_table *table)
 		if (ph_init_philo(table))
 			return (1);
 	// olum kontrolu
+
+	int dcheck;
+	while (1)
+	{
+		dcheck = -1;
+		lock(table->dmx);
+		while (++(dcheck) < table->num)
+		{
+			if ((table->philos[dcheck].last_eat + table->ttd) < (ph_updateTime(table) - table->start_milis))
+			{
+				table->is_anybody_died = 1;
+				ph_print("is dead", table->philos[dcheck].data);
+				unlock(table->dmx);
+				return (0);
+			}
+			usleep(100);
+		}
+		unlock(table->dmx);
+	}
+
+	// olum kontrolu //
+
 	table->i = -1;
 	while (++(table->i) < table->num)
 		pthread_join(table->philos[table->i].thread, NULL);
@@ -71,6 +93,8 @@ int ph_init_table(int ac, char **av, t_table *table)
 int ph_init_forks(t_table *table)
 {
 	table->forks = malloc(table->num * sizeof(pthread_mutex_t));
+	table->dmx = malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init(table->dmx, NULL);
 	table->i = -1;
 	while (++(table->i) < table->num)
 		if (pthread_mutex_init(&table->forks[table->i], NULL))

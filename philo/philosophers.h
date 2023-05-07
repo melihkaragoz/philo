@@ -15,6 +15,7 @@ typedef struct s_philo
 	pthread_mutex_t *left_fork;
 	pthread_mutex_t *right_fork;
 	pthread_t thread;
+	struct s_data *data;
 } t_philo;
 
 typedef struct s_table
@@ -31,6 +32,7 @@ typedef struct s_table
 	struct timeval *tv;
 	long long start_milis;
 	pthread_mutex_t *forks;
+	pthread_mutex_t *dmx;
 	t_philo *philos;
 } t_table;
 
@@ -54,4 +56,6 @@ void ph_exit();
 void ph_print(char *str, t_data *data);
 long long ph_updateTime(t_table *table);
 void ph_delay(int sec, t_table *table);
+void	lock(pthread_mutex_t *mx);
+void	unlock(pthread_mutex_t *mx);
 #endif
