@@ -12,6 +12,7 @@ typedef struct s_philo
 	int id;
 	int alive;
 	long last_eat;
+	int eat_count;
 	pthread_mutex_t *left_fork;
 	pthread_mutex_t *right_fork;
 	pthread_t thread;
@@ -29,6 +30,7 @@ typedef struct s_table
 	int tts;
 	int pme;
 	int is_anybody_died;
+	int count_ok;
 	struct timeval *tv;
 	long long start_milis;
 	pthread_mutex_t *forks;
@@ -51,11 +53,12 @@ long long ph_updateTime(t_table *table);
 int ph_init_forks(t_table *table);
 int ph_init_table(int ac, char **av, t_table *table);
 int ph_check_arg(int ac, char **av, t_table *table);
+int ph_check_eat_count(t_table *table, t_philo *philo);
 void *ph_routine(void *arg);
 void ph_exit();
 void ph_print(char *str, t_data *data);
 long long ph_updateTime(t_table *table);
 void ph_delay(int sec, t_table *table);
-void	lock(pthread_mutex_t *mx);
-void	unlock(pthread_mutex_t *mx);
+void lock(pthread_mutex_t *mx);
+void unlock(pthread_mutex_t *mx);
 #endif

@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:51:38 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/05/06 22:53:00 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/05/08 22:00:57 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,10 @@ void *ph_routine(void *arg)
 	data->table->philos[data->id].id = data->id;
 	data->table->philos[data->id].data = data;
 	// lock(data->table->dmx);
-	while (!data->table->is_anybody_died)
+	while (!data->table->is_anybody_died && !data->table->count_ok)
 	{
-		ph_eat(data);
+		if (!data->table->pme || data->table->philos[data->id].eat_count < data->table->pme)
+			ph_eat(data);
 		ph_sleep(data);
 		ph_think(data);
 	}
@@ -45,6 +46,7 @@ void ph_eat(t_data *data)
 		usleep(200);
 	unlock(data->table->philos[data->id].left_fork);
 	unlock(data->table->philos[data->id].right_fork);
+	data->table->philos[data->id].eat_count++;
 }
 
 void ph_sleep(t_data *data)

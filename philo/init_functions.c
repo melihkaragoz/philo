@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 23:07:48 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/05/06 22:49:58 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/05/08 22:04:53 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int ph_init_philo(t_table *table)
 	table->philos[table->i].id = table->i;
 	table->philos[table->i].alive = 1;
 	table->philos[table->i].last_eat = 0;
+	table->philos[table->i].eat_count = 0;
 	table->philos[table->i].left_fork = &table->forks[table->i];
 	if (table->i == table->num - 1)
 		table->philos[table->i].right_fork = &table->forks[0];
@@ -41,7 +42,6 @@ int ph_init_philos(t_table *table)
 		if (ph_init_philo(table))
 			return (1);
 	// olum kontrolu
-
 	int dcheck;
 	while (1)
 	{
@@ -56,17 +56,27 @@ int ph_init_philos(t_table *table)
 				unlock(table->dmx);
 				return (0);
 			}
+			else if (ph_check_eat_count(table, &table->philos[dcheck]))
+			{
+				unlock(table->dmx);
+				return (0);
+			}
 			usleep(100);
 		}
 		unlock(table->dmx);
 	}
-
 	// olum kontrolu //
-
 	table->i = -1;
 	while (++(table->i) < table->num)
 		pthread_join(table->philos[table->i].thread, NULL);
 	return (0);
+}
+
+int	ph_check_eat_count(t_table *table, t_philo *philo)
+{
+	if (!table->pme || philo->eat_count < table->pme)
+		return (0);
+	return (1);
 }
 
 int ph_init_table(int ac, char **av, t_table *table)
@@ -80,7 +90,9 @@ int ph_init_table(int ac, char **av, t_table *table)
 	table->ttd = atoi(av[2]);
 	table->tte = atoi(av[3]);
 	table->tts = atoi(av[4]);
+	table->pme = 0;
 	table->tv = tv;
+	table->count_ok = 0;
 	table->start_milis = ph_updateTime(table);
 	table->is_anybody_died = 0;
 	if (ac == 6)
