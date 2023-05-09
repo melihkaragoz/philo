@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 23:07:48 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/05/09 08:37:28 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/05/09 11:18:45 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,8 @@ int ph_check_death(t_table *table)
 		{
 			table->is_anybody_died = 1;
 			usleep(200);
-			ph_print("is dead", table->philos[dcheck].data);
+			// ph_print("is dead", table->philos[dcheck].data);
+			printf("[%lld]\t%d %s\n", ph_updateTime(table) - table->start_milis, table->philos[dcheck].data->id, "is dead");
 			return (1);
 		}
 		else if (ph_check_eat_count(table, &table->philos[dcheck]))

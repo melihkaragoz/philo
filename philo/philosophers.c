@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 03:10:53 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/05/09 08:07:34 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/05/09 11:22:24 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ int main(int ac, char **av)
 	if (ph_check_arg(ac, av, &table) || ph_init_table(ac, av, &table))
 		ph_exit();
 	ph_init_philos(&table);
-	printf("[END]\n");
+	// printf("[%lld]\t[END]\n", ph_updateTime(&table) - table.start_milis);
+	// system("leaks philo");
 	return (0);
 }
