@@ -61,4 +61,5 @@ long long ph_updateTime(t_table *table);
 void ph_delay(int sec, t_table *table);
 void lock(pthread_mutex_t *mx);
 void unlock(pthread_mutex_t *mx);
+int ph_death_control(t_table *table);
 #endif

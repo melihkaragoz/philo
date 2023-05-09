@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 23:07:48 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/05/08 22:04:53 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/05/09 00:40:08 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,29 +42,9 @@ int ph_init_philos(t_table *table)
 		if (ph_init_philo(table))
 			return (1);
 	// olum kontrolu
-	int dcheck;
 	while (1)
-	{
-		dcheck = -1;
-		lock(table->dmx);
-		while (++(dcheck) < table->num)
-		{
-			if ((table->philos[dcheck].last_eat + table->ttd) < (ph_updateTime(table) - table->start_milis))
-			{
-				table->is_anybody_died = 1;
-				ph_print("is dead", table->philos[dcheck].data);
-				unlock(table->dmx);
-				return (0);
-			}
-			else if (ph_check_eat_count(table, &table->philos[dcheck]))
-			{
-				unlock(table->dmx);
-				return (0);
-			}
-			usleep(100);
-		}
-		unlock(table->dmx);
-	}
+		if(ph_death_control(table))
+			break;
 	// olum kontrolu //
 	table->i = -1;
 	while (++(table->i) < table->num)
@@ -72,7 +52,33 @@ int ph_init_philos(t_table *table)
 	return (0);
 }
 
-int	ph_check_eat_count(t_table *table, t_philo *philo)
+int ph_death_control(t_table *table)
+{
+	int dcheck;
+
+	dcheck = -1;
+	lock(table->dmx);
+	while (++(dcheck) < table->num)
+	{
+		if ((table->philos[dcheck].last_eat + table->ttd) < (ph_updateTime(table) - table->start_milis))
+		{
+			table->is_anybody_died = 1;
+			ph_print("is dead", table->philos[dcheck].data);
+			unlock(table->dmx);
+			return (1);
+		}
+		else if (ph_check_eat_count(table, &table->philos[dcheck]))
+		{
+			unlock(table->dmx);
+			return (1);
+		}
+		usleep(100);
+	}
+	unlock(table->dmx);
+	return (0);
+}
+
+int ph_check_eat_count(t_table *table, t_philo *philo)
 {
 	if (!table->pme || philo->eat_count < table->pme)
 		return (0);
