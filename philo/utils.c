@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:51:38 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/05/09 08:15:30 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/05/09 08:28:48 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void ph_sleep(t_data *data)
 		long cr;
 		ph_print("is sleeping", data);
 		cr = ph_updateTime(data->table);
-		while (cr + data->table->tte > ph_updateTime(data->table))
+		while (cr + data->table->tts > ph_updateTime(data->table))
 			usleep(100);
 	}
 }
