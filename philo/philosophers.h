@@ -7,6 +7,9 @@
 #include <pthread.h>
 #include <sys/time.h>
 
+#define PR_RED "\x1b[41;5;197m"
+#define PR_GRN "\x1b[42;5;10m"
+
 typedef struct s_philo
 {
 	int id;
@@ -30,7 +33,7 @@ typedef struct s_table
 	int tts;
 	int pme;
 	int is_anybody_died;
-	int count_ok;
+	int	count_ok;
 	struct timeval *tv;
 	long long start_milis;
 	pthread_mutex_t *forks;
@@ -54,6 +57,7 @@ int ph_init_forks(t_table *table);
 int ph_init_table(int ac, char **av, t_table *table);
 int ph_check_arg(int ac, char **av, t_table *table);
 int ph_check_eat_count(t_table *table, t_philo *philo);
+int ph_check_death(t_table *table);
 void *ph_routine(void *arg);
 void ph_exit();
 void ph_print(char *str, t_data *data);
@@ -61,5 +65,4 @@ long long ph_updateTime(t_table *table);
 void ph_delay(int sec, t_table *table);
 void lock(pthread_mutex_t *mx);
 void unlock(pthread_mutex_t *mx);
-int ph_death_control(t_table *table);
 #endif
