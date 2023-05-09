@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 23:07:48 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/05/09 08:16:08 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/05/09 08:37:28 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ int ph_init_philos(t_table *table)
 	table->i = -1;
 	while (++(table->i) < table->num)
 		pthread_join(table->philos[table->i].thread, NULL);
+	printf("**\n");
 	return (0);
 }
 
@@ -73,6 +74,7 @@ int ph_check_death(t_table *table)
 		if ((table->philos[dcheck].last_eat + table->ttd) < (ph_updateTime(table) - table->start_milis))
 		{
 			table->is_anybody_died = 1;
+			usleep(200);
 			ph_print("is dead", table->philos[dcheck].data);
 			return (1);
 		}
