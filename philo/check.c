@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 03:10:47 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/05/09 10:36:32 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/05/18 18:29:17 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,10 @@ int	ph_check_arg(int ac, char **av, t_table *table)
 	return (0);
 }
 
-long long ph_updateTime(t_table *table)
+long long 	ph_updateTime(t_table *table)
 {
+	lock(&table->tmx);
 	gettimeofday(table->tv, NULL);
+	unlock(&table->tmx);
 	return ((table->tv->tv_sec * 1000) + (table->tv->tv_usec / 1000));
-}
-
-void ph_delay(int sec, t_table *t)
-{
-	long long tmp;
-
-	tmp = ph_updateTime(t);
-	while (ph_updateTime(t) <= tmp + sec)
-		continue;
 }
