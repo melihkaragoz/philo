@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:51:38 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/06/01 18:59:52 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/06/04 16:45:11 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ void ph_eat(t_data *data)
 		unlock(data->table->philos[data->id].left_fork);
 		unlock(data->table->philos[data->id].right_fork);
 	}
-	unlock(&data->table->dmx);
+	else
+		unlock(&data->table->dmx);
 }
 
 void ph_sleep(t_data *data)
@@ -78,7 +79,8 @@ void ph_sleep(t_data *data)
 		while (cr + data->table->tts > ph_updateTime(data->table))
 			usleep(200);
 	}
-	unlock(&data->table->dmx);
+	else
+		unlock(&data->table->dmx);
 }
 
 void ph_think(t_data *data)
@@ -89,7 +91,8 @@ void ph_think(t_data *data)
 		unlock(&data->table->dmx);
 		ph_print("is thinking", data);
 	}
-	unlock(&data->table->dmx);
+	else
+		unlock(&data->table->dmx);
 }
 
 void ph_print(char *str, t_data *data)
