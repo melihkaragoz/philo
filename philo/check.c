@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 03:10:47 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/06/07 15:30:17 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/06/07 15:45:10 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ long long	ph_update_time(t_table *table)
 	return ((table->tv->tv_sec * 1000) + (table->tv->tv_usec / 1000));
 }
 
-void ph_eat_extended(t_data *data)
+void	ph_eat_extended(t_data *data)
 {
 	long long	cr;
 

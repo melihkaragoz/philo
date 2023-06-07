@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:51:38 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/06/07 15:42:56 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/06/07 15:45:38 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@ void	*ph_routine(void *arg)
 
 int	ph_eat(t_data *data)
 {
-	long long	cr;
-
 	lock(&data->table->dmx);
 	if (!data->table->is_anybody_died && (data->table->pme == -1 || \
 		(data->table->pme > 0 && data->table->philos[data->id].eat_count \
@@ -60,24 +58,7 @@ int	ph_eat(t_data *data)
 			unlock(data->table->philos[data->id].left_fork);
 			return (1);
 		}
-		lock(data->table->philos[data->id].right_fork);
-		lock(&data->table->lmx);
-		data->table->philos[data->id].last_eat = ph_update_time(data->table) \
-			- data->table->s_milis;
-		unlock(&data->table->lmx);
-		ph_print("has taken a fork", data);
-		ph_print("is eating", data);
-		lock(&data->table->philos[data->id].emx);
-		data->table->philos[data->id].eat_count++;
-		unlock(&data->table->philos[data->id].emx);
-		lock(&data->table->temx);
-		data->table->tec++;
-		unlock(&data->table->temx);
-		cr = ph_update_time(data->table);
-		while (cr + data->table->tte > ph_update_time(data->table))
-			usleep(200);
-		unlock(data->table->philos[data->id].left_fork);
-		unlock(data->table->philos[data->id].right_fork);
+		ph_eat_extended(data);
 		return (0);
 	}
 	else
