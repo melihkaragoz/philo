@@ -6,15 +6,15 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 23:07:48 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/06/07 13:27:21 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/06/07 15:14:23 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int ph_init_philo(t_table *table)
+int	ph_init_philo(t_table *table)
 {
-	t_data *data;
+	t_data	*data;
 
 	data = malloc(sizeof(t_data));
 	table->philos[table->i].id = table->i;
@@ -35,48 +35,40 @@ int ph_init_philo(t_table *table)
 	return (0);
 }
 
-int ph_init_philos(t_table *table)
+int	ph_init_philos(t_table *table)
 {
 	table->philos = malloc(table->num * sizeof(t_philo));
 	table->i = -1;
 	while (++(table->i) < table->num)
 		if (ph_init_philo(table))
 			return (1);
-	// olum kontrolu
 	while (1)
 		if (ph_check_death(table))
-			break;
-	// olum kontrolu //
-	//lock(&table->dmx);
+			break ;
 	table->i = -1;
 	while (++(table->i) < table->num)
 		pthread_join(table->philos[table->i].thread, NULL);
 	return (0);
 }
 
-int ph_check_eat_count(t_table *table, t_philo *philo)
+int	ph_check_death(t_table *table)
 {
-	if (!table->pme || philo->eat_count < table->pme)
-		return (0);
-	return (1);
-}
-
-int ph_check_death(t_table *table)
-{
-	int dcheck;
+	int	dcheck;
 
 	dcheck = -1;
 	while (++(dcheck) < table->num)
 	{
 		lock(&table->lmx);
-		if ((table->philos[dcheck].last_eat + table->ttd) < (ph_updateTime(table) - table->start_milis))
+		if ((table->philos[dcheck].last_eat + table->ttd) \
+			< (ph_update_time(table) - table->s_milis))
 		{
 			unlock(&table->lmx);
 			lock(&table->dmx);
 			table->is_anybody_died = 1;
 			lock(&table->temx);
-			if (!((table->pme > 0 && (table->total_eat_count >= (table->pme * table->num)))))
-				printf("[%lld]\t%d %s\n", ph_updateTime(table) - table->start_milis, table->philos[dcheck].data->id, "is dead");
+			if (!(table->pme > 0 && (table->tec >= (table->pme * table->num))))
+				printf("[%lld]\t%d %s\n", ph_update_time(table) \
+				- table->s_milis, table->philos[dcheck].data->id, "is dead");
 			unlock(&table->temx);
 			unlock(&table->dmx);
 			return (1);
@@ -88,9 +80,9 @@ int ph_check_death(t_table *table)
 	return (0);
 }
 
-int ph_init_table(int ac, char **av, t_table *table)
+int	ph_init_table(int ac, char **av, t_table *table)
 {
-	struct timeval *tv;
+	struct timeval	*tv;
 
 	tv = malloc(sizeof(struct timeval *));
 	table->ac = ac;
@@ -101,8 +93,8 @@ int ph_init_table(int ac, char **av, t_table *table)
 	table->tts = atoi(av[4]);
 	table->pme = -1;
 	table->tv = tv;
-	table->total_eat_count = 0;
-	table->start_milis = ph_updateTime(table);
+	table->tec = 0;
+	table->s_milis = ph_update_time(table);
 	table->is_anybody_died = 0;
 	if (ac == 6)
 		table->pme = atoi(av[5]);
@@ -111,7 +103,7 @@ int ph_init_table(int ac, char **av, t_table *table)
 	return (0);
 }
 
-int ph_init_forks(t_table *table)
+int	ph_init_forks(t_table *table)
 {
 	table->forks = malloc(table->num * sizeof(pthread_mutex_t));
 	pthread_mutex_init(&table->dmx, NULL);

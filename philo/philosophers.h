@@ -33,10 +33,10 @@ typedef struct s_table
 	int tte;
 	int tts;
 	int pme;
-	int total_eat_count;
+	int tec;
 	int is_anybody_died;
 	struct timeval *tv;
-	long long start_milis;
+	long long s_milis;
 	pthread_mutex_t *forks;
 	pthread_mutex_t dmx;
 	pthread_mutex_t tmx;
@@ -54,18 +54,18 @@ typedef struct s_data
 int ph_init_philo(t_table *table);
 int ph_init_philos(t_table *table);
 int	ph_eat(t_data *data);
+void ph_eat_extended(t_data *data);
 void ph_think(t_data *data);
 void ph_sleep(t_data *data);
-long long ph_updateTime(t_table *table);
+long long ph_update_time(t_table *table);
 int ph_init_forks(t_table *table);
 int ph_init_table(int ac, char **av, t_table *table);
 int ph_check_arg(int ac, char **av, t_table *table);
-int ph_check_eat_count(t_table *table, t_philo *philo);
 int ph_check_death(t_table *table);
 void *ph_routine(void *arg);
 void ph_exit();
 void ph_print(char *str, t_data *data);
-long long ph_updateTime(t_table *table);
+long long ph_update_time(t_table *table);
 void lock(pthread_mutex_t *mx);
 void unlock(pthread_mutex_t *mx);
 #endif
