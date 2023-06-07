@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 17:51:38 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/06/04 16:45:11 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/06/07 13:37:25 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,17 @@ void *ph_routine(void *arg)
 	while (1)
 	{
 		lock(&data->table->dmx);
-		if (data->table->is_anybody_died)
+		lock(&data->table->temx);
+		if (data->table->is_anybody_died || (data->table->pme > 0 && (data->table->total_eat_count >= (data->table->pme * data->table->num))))
+		{
+			unlock(&data->table->dmx);
+			unlock(&data->table->temx);
 			break;
+		}
 		unlock(&data->table->dmx);
-		ph_eat(data);
+		unlock(&data->table->temx);
+		if (ph_eat(data))
+			break;
 		ph_sleep(data);
 		ph_think(data);
 	}
@@ -33,11 +40,11 @@ void *ph_routine(void *arg)
 	return (NULL);
 }
 
-void ph_eat(t_data *data)
+int ph_eat(t_data *data)
 {
 	long long cr;
 	lock(&data->table->dmx);
-	if (!data->table->is_anybody_died)
+	if (!data->table->is_anybody_died && (data->table->pme == -1 || (data->table->pme > 0 && data->table->philos[data->id].eat_count < data->table->pme)))
 	{
 		unlock(&data->table->dmx);
 		lock(data->table->philos[data->id].left_fork);
@@ -48,7 +55,7 @@ void ph_eat(t_data *data)
 			data->table->is_anybody_died = 1;
 			unlock(&data->table->dmx);
 			unlock(data->table->philos[data->id].left_fork);
-			return;
+			return (1);
 		}
 		lock(data->table->philos[data->id].right_fork);
 		lock(&data->table->lmx);
@@ -56,15 +63,24 @@ void ph_eat(t_data *data)
 		unlock(&data->table->lmx);
 		ph_print("has taken a fork", data);
 		ph_print("is eating", data);
+		lock(&data->table->philos[data->id].emx);
 		data->table->philos[data->id].eat_count++;
+		unlock(&data->table->philos[data->id].emx);
+		lock(&data->table->temx);
+		data->table->total_eat_count++;
+		unlock(&data->table->temx);
 		cr = ph_updateTime(data->table);
 		while (cr + data->table->tte > ph_updateTime(data->table))
 			usleep(200);
 		unlock(data->table->philos[data->id].left_fork);
 		unlock(data->table->philos[data->id].right_fork);
+		return (0);
 	}
 	else
+	{
 		unlock(&data->table->dmx);
+		return (1);
+	}
 }
 
 void ph_sleep(t_data *data)

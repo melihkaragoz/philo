@@ -6,7 +6,7 @@
 /*   By: mkaragoz <mkaragoz@student.42istanbul.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/08 23:07:48 by mkaragoz          #+#    #+#             */
-/*   Updated: 2023/06/04 17:01:47 by mkaragoz         ###   ########.fr       */
+/*   Updated: 2023/06/07 13:27:21 by mkaragoz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int ph_init_philo(t_table *table)
 	table->philos[table->i].id = table->i;
 	table->philos[table->i].alive = 1;
 	table->philos[table->i].last_eat = 0;
+	pthread_mutex_init(&table->philos[table->i].emx, NULL);
 	table->philos[table->i].eat_count = 0;
 	table->philos[table->i].left_fork = &table->forks[table->i];
 	if (table->i == table->num - 1)
@@ -73,7 +74,10 @@ int ph_check_death(t_table *table)
 			unlock(&table->lmx);
 			lock(&table->dmx);
 			table->is_anybody_died = 1;
-			printf("[%lld]\t%d %s\n", ph_updateTime(table) - table->start_milis, table->philos[dcheck].data->id, "is dead");
+			lock(&table->temx);
+			if (!((table->pme > 0 && (table->total_eat_count >= (table->pme * table->num)))))
+				printf("[%lld]\t%d %s\n", ph_updateTime(table) - table->start_milis, table->philos[dcheck].data->id, "is dead");
+			unlock(&table->temx);
 			unlock(&table->dmx);
 			return (1);
 		}
@@ -97,6 +101,7 @@ int ph_init_table(int ac, char **av, t_table *table)
 	table->tts = atoi(av[4]);
 	table->pme = -1;
 	table->tv = tv;
+	table->total_eat_count = 0;
 	table->start_milis = ph_updateTime(table);
 	table->is_anybody_died = 0;
 	if (ac == 6)
@@ -112,6 +117,7 @@ int ph_init_forks(t_table *table)
 	pthread_mutex_init(&table->dmx, NULL);
 	pthread_mutex_init(&table->tmx, NULL);
 	pthread_mutex_init(&table->lmx, NULL);
+	pthread_mutex_init(&table->temx, NULL);
 	table->i = -1;
 	while (++(table->i) < table->num)
 		if (pthread_mutex_init(&table->forks[table->i], NULL))

@@ -18,6 +18,7 @@ typedef struct s_philo
 	int eat_count;
 	pthread_mutex_t *left_fork;
 	pthread_mutex_t *right_fork;
+	pthread_mutex_t emx;
 	pthread_t thread;
 	struct s_data *data;
 } t_philo;
@@ -32,6 +33,7 @@ typedef struct s_table
 	int tte;
 	int tts;
 	int pme;
+	int total_eat_count;
 	int is_anybody_died;
 	struct timeval *tv;
 	long long start_milis;
@@ -39,6 +41,7 @@ typedef struct s_table
 	pthread_mutex_t dmx;
 	pthread_mutex_t tmx;
 	pthread_mutex_t lmx;
+	pthread_mutex_t temx;
 	t_philo *philos;
 } t_table;
 
@@ -50,7 +53,7 @@ typedef struct s_data
 
 int ph_init_philo(t_table *table);
 int ph_init_philos(t_table *table);
-void ph_eat(t_data *data);
+int	ph_eat(t_data *data);
 void ph_think(t_data *data);
 void ph_sleep(t_data *data);
 long long ph_updateTime(t_table *table);
